@@ -1,0 +1,21 @@
+#!/bin/sh
+ 
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs devtmpfs /dev
+#chown root:root flag
+#chmod 400 flag
+exec 0</dev/console
+exec 1>/dev/console
+exec 2>/dev/console
+
+insmod /puaf.ko
+chmod 777 /dev/puaf
+chmod 444 ro_test
+echo -e "\nBoot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
+setsid cttyhack setuidgid 0 sh
+
+umount /proc
+umount /sys
+poweroff -d 0  -f
+
